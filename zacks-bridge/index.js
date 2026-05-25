@@ -18,11 +18,9 @@ async function main() {
         process.exit(0);
     } catch (error) {
         console.error("Error fetching data:", error);
+        
         process.exit(1);
     };
-
-    
-    
 }
 
 main();
