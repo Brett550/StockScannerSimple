@@ -1,6 +1,8 @@
 from danel import DanelClient
 from zacks import ZacksClient
 from csv_maker import CsvMaker
+from emailer import send_email
+from datetime import date
 
 stocks = []
 
@@ -39,3 +41,14 @@ print("Saving as CSV...")
 csv_maker = CsvMaker()
 csv_maker.make_csv(stocks, 'stockReport.csv')
 # csv_maker.print_csv(stocks)
+
+print("Emailing report...")
+date = str(date.today())
+
+send_email(
+    subject="Stock Report " + date,
+    body="Attached is stock scanner report for " + date,
+    file_path="stockReport.csv"
+)
+
+print("Done!")
