@@ -19,18 +19,23 @@ for stock_group in dan_stocks.values():
 print("Cross referencing with Zacks...")
 zacks_client = ZacksClient()
 
-for ticker in tickers:
-    zacks_data = zacks_client.get_zacks_data(ticker)
-    zacks_rank = zacks_data.get('zacksRank') #API returns a string
+zacks_data = zacks_client.get_zacks_data(tickers)
 
-    # keep ones with rank of 1 or 2
-    if zacks_rank in ['1', '2']:
+for result in zacks_data:
+    if not result.get('success'):
+        continue
+
+    data = result.get('data', {}) #response object from the Zacks API
+    ticker = data.get('ticker')
+
+    if data.get('zacksRank') in ['1', '2']:
         stocks.append({
             'ticker': ticker,
-            'name': zacks_data.get('name')
+            'name': data.get('name')
         })
 
 # save as CSV
 print("Saving as CSV...")
 csv_maker = CsvMaker()
 csv_maker.make_csv(stocks, 'stockReport.csv')
+# csv_maker.print_csv(stocks)
