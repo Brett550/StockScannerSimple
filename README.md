@@ -2,6 +2,8 @@
 
 A small Python-based stock scanner that combines Danelfin ranking data and Zacks ratings, then generates a CSV report and sends it by email.
 
+Inspired by my dad who vibe-coded an app just like this. The AI ended up generating many more files and making the logic and architecture way more complex than it needed to be. I decided to simplify it all while keeping the core functionality, resulting in this project!
+
 ## Overview
 
 `StockScannerSimple` is designed for users who want a minimal pipeline that:
