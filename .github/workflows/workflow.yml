@@ -36,4 +36,4 @@ jobs:
         
         - name: Run Stock Scanner
           run: 
-            python -m stock_scanner
+            python main.py
