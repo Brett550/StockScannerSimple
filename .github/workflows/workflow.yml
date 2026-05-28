@@ -8,6 +8,11 @@ on:
 jobs:
   stock-scanner:
     runs-on: ubuntu-latest
+    env:
+      DANELFIN_API_KEY: ${{ secrets.DANELFIN_API_KEY }}
+      EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+      TO_EMAIL: ${{ secrets.TO_EMAIL }}
 
     steps:
         - name: Checkout Repository
