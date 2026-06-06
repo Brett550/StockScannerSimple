@@ -3,6 +3,7 @@ from zacks import ZacksClient
 from csv_maker import CsvMaker
 from emailer import send_email
 from datetime import date
+from database.supa import supa
 
 stocks = []
 
@@ -37,7 +38,7 @@ for result in zacks_data:
     if data.get('zacksRank') in ['1', '2']:
         stocks.append({
             'ticker': ticker,
-            'name': data.get('name'),
+            'company_name': data.get('name'),
             'd_score': ticker_scores.get(ticker, 'N/A'),
             'z_score': data.get('zacksRank')
         })
@@ -47,6 +48,16 @@ print("Saving as CSV...")
 csv_maker = CsvMaker()
 csv_maker.make_csv(stocks, 'stockReport.csv')
 # csv_maker.print_csv(stocks)
+
+
+# Upload to database
+try:
+    supa_db = supa()
+    supa_db.insert_data(csv_maker.get_df(stocks))
+    print("Data successfully written to Supabase!")
+except Exception as e:
+    print(f"Error writing to Supabase: {e}")
+
 
 # Send the email
 print("Emailing report...")
