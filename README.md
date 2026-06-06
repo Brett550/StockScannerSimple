@@ -13,23 +13,53 @@ Inspired by my dad who vibe-coded an app just like this. The AI ended up generat
 - Enriches those tickers using a Zacks lookup through a local Node.js bridge
 - Writes matching stocks to `stockReport.csv`
 - Emails the report using SMTP credentials from environment variables
+- Exposes a Flask API for retrieving stored stock history and analytics
 
 ## Repository Layout
 
-- `main.py` - orchestration script that executes the scanner workflow
-- `danel.py` - Danelfin API client
-- `zacks.py` - Node bridge invoker for Zacks data
-- `csv_maker.py` - CSV generation utility
-- `emailer.py` - SMTP email sender
+- `script/main.py` - orchestration script that executes the scanner workflow
+- `script/danel.py` - Danelfin API client
+- `script/zacks.py` - Node bridge invoker for Zacks data
+- `script/csv_maker.py` - CSV generation utility
+- `script/emailer.py` - SMTP email sender
 - `stockReport.csv` - sample/output report file
-- `requirements.txt` - Python dependencies
+- `script/requirements.txt` - Python dependencies for the scanner
 - `zacks-bridge/` - Node.js wrapper that calls `zacks-api`
+- `api/app.py` - Flask API server exposing stock and analytics endpoints
+- `api/services/service.py` - service layer for Supabase queries
+- `api/db/supabase.py` - Supabase client configuration
+- `api/requirements.txt` - Python dependencies for the API backend
+
+## API Endpoints
+
+The API server exposes the following endpoints:
+
+- `GET /stocks`
+  - Query params:
+    - `limit` (default `100`, max `100`)
+    - `offset` (default `0`)
+    - `date` (optional, format `YYYY-MM-DD`)
+  - Returns stored history rows from the `history` table.
+
+- `GET /analytics/streaks`
+  - Returns ticker streak analytics from the `ticker_streaks` table.
+
+Responses are returned as JSON with the shape:
+
+```json
+{
+  "success": true,
+  "data": [ ... ],
+  "error": null
+}
+```
 
 ## Prerequisites
 
 - Python 3.11+ installed
 - Node.js installed (for the Zacks bridge)
 - A Danelfin API key
+- Supabase credentials for the API backend
 - An SMTP-capable email account and credentials
 
 ## Setup
@@ -43,10 +73,10 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-3. Install Python dependencies:
+3. Install Python dependencies for the scanner:
 
 ```powershell
-python -m pip install -r requirements.txt
+python -m pip install -r script/requirements.txt
 ```
 
 4. Install Node dependencies for the Zacks bridge:
@@ -57,23 +87,31 @@ npm install
 cd ..
 ```
 
-5. Create a `.env` file in the repo root with the following values:
+5. Install the API backend dependencies:
+
+```powershell
+python -m pip install -r api/requirements.txt
+```
+
+6. Create a `.env` file in the repo root with the following values:
 
 ```text
 DANELFIN_API_KEY=your_danelfin_api_key
 EMAIL_ADDRESS=your_email@example.com
 EMAIL_PASSWORD=your_smtp_password
 TO_EMAIL=recipient@example.com
+SUPABASE_URL=https://your-supabase-url
+SUPABASE_KEY=your_supabase_anon_or_service_key
 ```
 
 > If you are using Gmail, you may need an app password or enable SMTP access for the account.
 
-## Running the Project
+## Running the Scanner
 
 From the repository root, run:
 
 ```powershell
-python main.py
+python script/main.py
 ```
 
 The script will:
@@ -83,25 +121,35 @@ The script will:
 3. Produce `stockReport.csv`
 4. Send the report as an email attachment
 
-## What to Expect
+## Running the API
 
-- `stockReport.csv` will contain the filtered ticker data
-- The email is sent using `smtp.gmail.com:465` by default
-- If any API call fails, the script raises an exception and stops
+From the repository root, start the Flask API with:
+
+```powershell
+python -m flask --app api.app run
+```
+
+Then access the endpoints at:
+
+- `http://127.0.0.1:5000/stocks`
+- `http://127.0.0.1:5000/analytics/streaks`
 
 ## Customization Notes
 
 - Adjust the Danelfin score filter in `main.py` or `danel.py`
 - Change Zacks ranking logic in `main.py` if you want different thresholds
 - Update `emailer.py` to use another SMTP server or delivery method
+- Modify `api/services/service.py` to change the stock query or analytics behavior
 
 ## Troubleshooting
 
 - `node` must be available on the PATH for `zacks.py` to work
 - Verify `zacks-bridge/index.js` can run independently if Zacks results fail
 - Check `.env` values for typos and missing credentials
+- Ensure `SUPABASE_URL` and `SUPABASE_KEY` are set before starting the API
 
 ## Dependencies
 
-- Python dependencies are listed in `requirements.txt`
+- Python dependencies for the scanner are listed in `requirements.txt`
+- Python dependencies for the API are listed in `api/requirements.txt`
 - Node dependency: `zacks-api`
