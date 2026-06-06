@@ -10,18 +10,22 @@ stocks = []
 danel_client = DanelClient("https://apirest.danelfin.com")
 
 print("Fetching DanelFin data...")
-tickers = []
 
 dan_stocks = danel_client.get_rankings()
 
-for stock_group in dan_stocks.values():
-    tickers.extend(stock_group.keys())
+#store ticker + score in dictionary
+ticker_scores = {
+    ticker: metrics["aiscore"]
+    for stocks in dan_stocks.values()
+    for ticker, metrics in stocks.items()
+}
+
 
 #cross reference against Zacks to keep ones with Zack score of 1 or 2
 print("Cross referencing with Zacks...")
 zacks_client = ZacksClient()
 
-zacks_data = zacks_client.get_zacks_data(tickers)
+zacks_data = zacks_client.get_zacks_data(list(ticker_scores.keys()))
 
 for result in zacks_data:
     if not result.get('success'):
@@ -33,7 +37,9 @@ for result in zacks_data:
     if data.get('zacksRank') in ['1', '2']:
         stocks.append({
             'ticker': ticker,
-            'name': data.get('name')
+            'name': data.get('name'),
+            'd_score': ticker_scores.get(ticker, 'N/A'),
+            'z_score': data.get('zacksRank')
         })
 
 # save as CSV
@@ -42,6 +48,7 @@ csv_maker = CsvMaker()
 csv_maker.make_csv(stocks, 'stockReport.csv')
 # csv_maker.print_csv(stocks)
 
+# Send the email
 print("Emailing report...")
 date = str(date.today())
 
