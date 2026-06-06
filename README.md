@@ -22,12 +22,12 @@ Inspired by my dad who vibe-coded an app just like this. The AI ended up generat
 - `script/zacks.py` - Node bridge invoker for Zacks data
 - `script/csv_maker.py` - CSV generation utility
 - `script/emailer.py` - SMTP email sender
-- `stockReport.csv` - sample/output report file
 - `script/requirements.txt` - Python dependencies for the scanner
-- `zacks-bridge/` - Node.js wrapper that calls `zacks-api`
+- `script/zacks-bridge/` - Node.js wrapper that calls `zacks-api`
+- `script/database/` - Handles Supabase connection for the script
 - `api/app.py` - Flask API server exposing stock and analytics endpoints
 - `api/services/service.py` - service layer for Supabase queries
-- `api/db/supabase.py` - Supabase client configuration
+- `api/db/supabase.py` - Supabase client configuration for API
 - `api/requirements.txt` - Python dependencies for the API backend
 
 ## API Endpoints
