@@ -123,10 +123,10 @@ The script will:
 
 ## Running the API
 
-From the repository root, start the Flask API with:
+From the api folder, start the Flask API with:
 
 ```powershell
-python -m flask --app api.app run
+flask run
 ```
 
 Then access the endpoints at:
