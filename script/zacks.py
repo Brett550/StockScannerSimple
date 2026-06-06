@@ -8,7 +8,7 @@ class ZacksClient:
     def get_zacks_data(self, tickers):
 
         result = subprocess.run(
-            ["node", "zacks-bridge/index.js", json.dumps(tickers)],
+            ["node", "script/zacks-bridge/index.js", json.dumps(tickers)],
             capture_output=True,
             text=True
         )
