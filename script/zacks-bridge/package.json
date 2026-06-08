@@ -10,6 +10,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "zacks-api": "^1.0.5"
+    "zacks-api": "github:Brett550/zacks-api"
   }
 }
