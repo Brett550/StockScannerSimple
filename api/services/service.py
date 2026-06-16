@@ -18,5 +18,5 @@ def get_stocks(limit: int, offset: int, date_str: str | None = None) -> list[dic
     return response.data
 
 def get_streaks() -> list[dict[str, Any]]:
-    response = supabase.table("ticker_streaks").select("*").order("streak_length_days", desc=True).order("ticker").execute()
+    response = supabase.table("ticker_streaks_noweekend").select("*").order("streak_length_days", desc=True).order("ticker").execute()
     return response.data
