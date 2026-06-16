@@ -42,7 +42,13 @@ The API server exposes the following endpoints:
   - Returns stored history rows from the `history` table.
 
 - `GET /analytics/streaks`
-  - Returns ticker streak analytics from the `ticker_streaks` table.
+  - Returns ticker streak analytics from the `ticker_streaks_noweekends` table.
+
+- `GET /analytics/newly_added`
+  - Returns tickers that appeared in today's scan that were not in yesterday's
+
+- `GET /analytics/newly_removed`
+  - Returns ticker that were in yesterday's scan but not in today's
 
 Responses are returned as JSON with the shape:
 
