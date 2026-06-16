@@ -20,3 +20,11 @@ def get_stocks(limit: int, offset: int, date_str: str | None = None) -> list[dic
 def get_streaks() -> list[dict[str, Any]]:
     response = supabase.table("ticker_streaks_noweekend").select("*").order("streak_length_days", desc=True).order("ticker").execute()
     return response.data
+
+def get_newly_added() -> list[dict[str, Any]]:
+    response = supabase.table("newly_added").select("*").order("date", desc=True).execute()
+    return response.data
+
+def get_newly_removed() -> list[dict[str, Any]]:
+    response = supabase.table("newly_removed").select("*").order("date", desc=True).execute()
+    return response.data
