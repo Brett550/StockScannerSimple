@@ -60,7 +60,7 @@ Responses are returned as JSON with the shape:
 }
 ```
 
-You can run the API locally or query it at https://stockscannersimple.onrender.com.
+The API is deployed at https://stockscannersimple.onrender.com.
 
 ## Prerequisites
 
