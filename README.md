@@ -60,6 +60,8 @@ Responses are returned as JSON with the shape:
 }
 ```
 
+You can run the API locally or query it at https://stockscannersimple.onrender.com.
+
 ## Prerequisites
 
 - Python 3.11+ installed
@@ -139,6 +141,8 @@ Then access the endpoints at:
 
 - `http://127.0.0.1:5000/stocks`
 - `http://127.0.0.1:5000/analytics/streaks`
+- `http://127.0.0.1:5000/analytics/newly_added`
+- `http://127.0.0.1:5000/analytics/newly_removed`
 
 ## Customization Notes
 
