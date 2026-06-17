@@ -1,7 +1,7 @@
 from flask import Flask, request
 from datetime import date, datetime, time
 from db.supabase import supabase
-from services.service import get_stocks, get_streaks, get_newly_added, get_newly_removed
+from services.service import get_stats, get_stocks, get_streaks, get_newly_added, get_newly_removed
 
 
 app = Flask(__name__)
@@ -64,6 +64,15 @@ def newly_removed_route():
     try:
         stocks = get_newly_removed()
         return {"success": True, "data": stocks, "error": None}, 200
+    except Exception as e:
+        app.logger.error(f"Error fetching data from Supabase: {e}")
+        return {"success": False, "data": [], "error": f"Failed to fetch data"}, 500
+    
+@app.route('/analytics/stats', methods=['GET'])
+def stats_route():
+    try:
+        stats = get_stats()
+        return {"success": True, "data": stats, "error": None}, 200
     except Exception as e:
         app.logger.error(f"Error fetching data from Supabase: {e}")
         return {"success": False, "data": [], "error": f"Failed to fetch data"}, 500

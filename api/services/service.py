@@ -28,3 +28,32 @@ def get_newly_added() -> list[dict[str, Any]]:
 def get_newly_removed() -> list[dict[str, Any]]:
     response = supabase.table("newly_removed").select("*").order("date", desc=True).execute()
     return response.data
+
+def get_stats() -> dict[str, Any]:
+    # most recent date
+    date_response = supabase.table("history").select("date").order("date", desc=True).limit(1).execute()
+    most_recent_date = date_response.data[0]["date"].split("T")[0] if date_response.data else None
+
+    # num current tickers
+    ticker_response = supabase.table("history").select("ticker").execute()
+    num_tickers = len(set(row["ticker"] for row in ticker_response.data))
+
+    # num newly added
+    added_response = supabase.table("newly_added").select("*", count="exact").execute()
+    num_added = added_response.count
+
+    # num newly removed
+    removed_response = supabase.table("newly_removed").select("*", count="exact").execute()
+    num_removed = removed_response.count
+
+    # longest streak
+    streak_response = supabase.table("ticker_streaks_noweekend").select("streak_length_days").order("streak_length_days", desc=True).limit(1).execute()
+    longest_streak = streak_response.data[0]["streak_length_days"] if streak_response.data else None
+
+    return {
+        "most_recent_date": most_recent_date,
+        "num_tickers": num_tickers,
+        "num_added": num_added,
+        "num_removed": num_removed,
+        "longest_streak": longest_streak
+    }
